@@ -40,5 +40,25 @@ router.get('/:petId', async (req, res) => {
   }
 });
 
+// DELETE - /pets/:petId
+router.delete('/:petId', async (req, res) => {
+  try {
+    const { petId } = req.params;
+
+    const deletedPet = await Pet.findByIdAndDelete(petId);
+
+    if (!deletedPet) {
+      return res.status(404).json({ err: `Pet with id '${petId}' not found` });
+    }
+
+    // Success: send the deleted pet object
+    return res.status(200).json(deletedPet);
+  } catch (err) {
+    // Any non-404 error => 500 with error message
+    console.error('DELETE /pets/:petId error:', err);
+    return res.status(500).json({ err: 'Internal Server Error', message: err.message });
+  }
+});
+
 
 module.exports = router;
