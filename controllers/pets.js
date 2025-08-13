@@ -60,5 +60,26 @@ router.delete('/:petId', async (req, res) => {
   }
 });
 
+// UPDATE - PUT - /pets/:petId
+router.put('/:petId', async (req, res) => {
+  try {
+    const updatedPet = await Pet.findByIdAndUpdate(req.params.petId, req.body, {
+      new: true,
+    });
+    if (!updatedPet) {
+      res.status(404);
+      throw new Error('Pet not found.');
+    }
+    res.status(200).json(updatedPet);
+  } catch (err) {
+    // Add code for errors
+    if (res.statusCode === 404) {
+      res.json({ err: err.message });
+    } else {
+      res.status(500).json({ err: err.message });
+    }
+  }
+});
+
 
 module.exports = router;
